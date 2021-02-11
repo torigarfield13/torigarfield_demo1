@@ -1,15 +1,31 @@
-var demo = {};
+var demo = {}, centerX = 1500 / 2, centerY = 1000 / 2, megaman, speed = 4; 
 demo.state0 = function(){};
 demo.state0.prototype = {
-    preload: function(){},
+    preload: function(){
+        game.load.image('megaman', 'assets/sprites/megaman.png');
+    },
     create: function(){
         game.stage.backgroundColor = '#80ff80';
         console.log('state0');
         addChangeStateEventListeners();
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL; 
-    
+        megaman = game.add.sprite(centerX, centerY, 'megaman');
+        megaman.anchor.setTo(0.5, 0.5);
     },
-    update: function(){}
+    update: function(){
+        if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+            megaman.x += speed; 
+        }
+        else if(game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+            megaman.x -= speed; 
+        }
+        if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+            megaman.y -= speed; 
+        }
+        else if(game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+            megaman.y += speed; 
+        }
+    }
 };
 
 function changeState(i, stateNum) {
