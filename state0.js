@@ -1,29 +1,53 @@
-var demo = {}, centerX = 1500 / 2, centerY = 1000 / 2, megaman, speed = 4; 
+var demo = {}, centerX = 1500 / 2, centerY = 1000 / 2, megaman, speed = 6; 
 demo.state0 = function(){};
 demo.state0.prototype = {
     preload: function(){
-        game.load.image('megaman', 'assets/sprites/megaman.png');
+        game.load.spritesheet('megaman', 'assets/spritesheet/megamanSheet.png', 240, 270);
+        game.load.image('background', 'assets/backgrounds/background.png');
     },
     create: function(){
+        game.physics.startSystem(Phaser.Physics.ARCADE);
         game.stage.backgroundColor = '#80ff80';
         console.log('state0');
         addChangeStateEventListeners();
-        game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL; 
+        game.world.setBounds(0,0, 2800, 1000);
+        game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        var background = game.add.sprite(0, 0, 'background');
         megaman = game.add.sprite(centerX, centerY, 'megaman');
-        megaman.anchor.setTo(0.5, 0.5);
+        megaman.anchor.setTo(0.5, -0.9);
+        megaman.scale.setTo(1.5, 1.5);
+        game.physics.enable(megaman);
+        megaman.body.collideWorldBounds = true;
+        megaman.animations.add('walk', [0, 1, 2, 3, 4]);
+        game.camera.follow(megaman); 
+        game.camera.deadzone = new Phaser.Rectangle(centerX - 300, 0, 600, 1000);
     },
     update: function(){
         if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+            megaman.scale.setTo(-1.5, 1.5);
             megaman.x += speed; 
+            megaman.animations.play('walk', 14, true);
         }
         else if(game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+            megaman.scale.setTo(1.5, 1.5);
             megaman.x -= speed; 
+            megaman.animations.play('walk', 14, true);
+        } 
+        else {
+            megaman.animations.stop('walk');
+            megaman.frame = 0;
         }
         if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
             megaman.y -= speed; 
+            if (megaman.y < -9.5) {
+                megaman.y = -9.5; 
+            }
         }
         else if(game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
             megaman.y += speed; 
+            if (megaman.y > 110.5) {
+                megaman.y = 110.5; 
+            }
         }
     }
 };
